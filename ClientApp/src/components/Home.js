@@ -1,26 +1,128 @@
 import React, { Component } from 'react';
+import Chart from 'chart.js/auto';
 
 export class Home extends Component {
-  static displayName = Home.name;
+    static displayName = Home.name;
 
-  render() {
-    return (
-      <div>
-        <h1>Hello, world!</h1>
-        <p>Welcome to your new single-page application, built with:</p>
-        <ul>
-          <li><a href='https://get.asp.net/'>ASP.NET Core</a> and <a href='https://msdn.microsoft.com/en-us/library/67ef8sbd.aspx'>C#</a> for cross-platform server-side code</li>
-          <li><a href='https://facebook.github.io/react/'>React</a> for client-side code</li>
-          <li><a href='http://getbootstrap.com/'>Bootstrap</a> for layout and styling</li>
-        </ul>
-        <p>To help you get started, we have also set up:</p>
-        <ul>
-          <li><strong>Client-side navigation</strong>. For example, click <em>Counter</em> then <em>Back</em> to return here.</li>
-          <li><strong>Development server integration</strong>. In development mode, the development server from <code>create-react-app</code> runs in the background automatically, so your client-side resources are dynamically built on demand and the page refreshes when you modify any file.</li>
-          <li><strong>Efficient production builds</strong>. In production mode, development-time features are disabled, and your <code>dotnet publish</code> configuration produces minified, efficiently bundled JavaScript files.</li>
-        </ul>
-        <p>The <code>ClientApp</code> subdirectory is a standard React application based on the <code>create-react-app</code> template. If you open a command prompt in that directory, you can run <code>npm</code> commands such as <code>npm test</code> or <code>npm install</code>.</p>
-      </div>
-    );
-  }
+    constructor(props) {
+        super(props);
+        this.state = { users: [], loading: true };
+    }
+
+    componentDidMount() {
+        this.populateUserData();
+    }
+
+    static renderUsersTable(users) {
+        return (
+            <table className="table table-striped" aria-labelledby="tableLabel">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>First name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>DOB</th>
+                        <th>DOB + 20</th>
+                        <th>Favourite colour</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {users.map(user => (
+                        <tr key={user.id}>
+                            <td>{user.id}</td>
+                            <td>{user.firstName}</td>
+                            <td>{user.lastName}</td>
+                            <td>{user.email}</td>
+                            <td>{user.doB}</td>
+                            <td>{calculateAgePlusTwenty(user.doB)}</td>
+                            <td>{user.favouriteColour}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        );
+    }
+
+    static rendercolourFrequencyTable(users) {
+        const colourFrequency = {};
+        users.forEach(user => {
+            const colour = user.favouriteColour;
+            colourFrequency[colour] = (colourFrequency[colour] || 0) + 1;
+        });
+
+        const sortedcolours = Object.keys(colourFrequency).sort((a, b) => {
+            if (colourFrequency[a] === colourFrequency[b]) {
+                return a.localeCompare(b);
+            }
+            return colourFrequency[b] - colourFrequency[a];
+        });
+
+        return (
+            <table className="table table-striped" aria-labelledby="tableLabel">
+                <thead>
+                    <tr>
+                        <th>Colour</th>
+                        <th>Frequency</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {sortedcolours.map(colour => (
+                        <tr key={colour}>
+                            <td>{colour}</td>
+                            <td>{colourFrequency[colour]}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        );
+    }
+
+    render() {
+        const { users, loading } = this.state;
+
+        return (
+            <><div>
+                <h1>Jack Barlow - Submission</h1>
+                <p>This is my interpretation of the following assignment</p>
+                <ul>
+                    <li>Hit the following endpoint to get user data https://recruitment.highfieldqualifications.com/api/test</li>
+                    <li>Calculate the following on the user set</li>
+                    <ul>
+                        <li>A list of each colour in the data set with the frequency of each colour, ordered by highest quantity then alphabetically</li>
+                        <li>Every user's age plus 20 years</li>
+                        <li>Display this information</li>
+                    </ul>
+                </ul>
+
+            </div><div>
+                    <div>
+                        <h2>Original Table</h2>
+                        {Home.renderUsersTable(users)}
+                        <h2>Colour Frequency Table</h2>
+                        {Home.rendercolourFrequencyTable(users)}
+                    </div>
+                </div></>
+        );
+
+    }
+
+    populateUserData() {
+        fetch('userdata')
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ users: data, loading: false });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                this.setState({ loading: false });
+            });
+    }
+}
+
+function calculateAgePlusTwenty(doB) {
+    const dob = new Date(doB);
+    const now = new Date();
+    const age = Math.floor((now - dob) / (365 * 24 * 60 * 60 * 1000));
+    return age + 20;
 }

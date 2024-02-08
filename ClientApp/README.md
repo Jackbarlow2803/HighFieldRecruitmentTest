@@ -392,7 +392,7 @@ import Button from './Button'; // Import a component from another file
 
 class DangerButton extends Component {
   render() {
-    return <Button color="red" />;
+    return <Button colour="red" />;
   }
 }
 
@@ -572,7 +572,7 @@ To enable importing files without using relative paths, you can add the  `--incl
 This will allow you to do imports like
 
 ```scss
-@import 'styles/_colors.scss'; // assuming a styles directory under src/
+@import 'styles/_colours.scss'; // assuming a styles directory under src/
 @import 'nprogress/nprogress'; // importing a css file from the nprogress node module
 ```
 
@@ -1709,7 +1709,7 @@ details specific to your web application.
 
 When a user adds a web app to their homescreen using Chrome or Firefox on
 Android, the metadata in [`manifest.json`](public/manifest.json) determines what
-icons, names, and branding colors to use when the web app is displayed.
+icons, names, and branding colours to use when the web app is displayed.
 [The Web App Manifest guide](https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/)
 provides more context about what each field means, and how your customizations
 will affect your users' experience.

@@ -6,7 +6,7 @@ namespace HighfieldRecruitmentTest.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserDataController : ControllerBase    
+    public class UserDataController : ControllerBase
     {
         private readonly ILogger<UserDataController> _logger;
 
@@ -25,5 +25,7 @@ namespace HighfieldRecruitmentTest.Controllers
 
             return userData;
         }
+
     }
 }
+
